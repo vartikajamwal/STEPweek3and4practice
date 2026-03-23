@@ -1,33 +1,40 @@
 import java.util.*;
 
 public class Week3n4 {
-    static int linearFirst(String[] arr,String key){
-        for(int i=0;i<arr.length;i++) if(arr[i].equals(key)) return i;
+    static int linear(int[] arr,int key){
+        for(int i=0;i<arr.length;i++) if(arr[i]==key) return i;
         return -1;
     }
 
-    static int binarySearch(String[] arr,String key){
-        int l=0,r=arr.length-1;
+    static int floor(int[] arr,int key){
+        int l=0,r=arr.length-1,ans=-1;
         while(l<=r){
             int m=(l+r)/2;
-            if(arr[m].equals(key)) return m;
-            else if(arr[m].compareTo(key)<0) l=m+1;
-            else r=m-1;
+            if(arr[m]<=key){
+                ans=arr[m];
+                l=m+1;
+            } else r=m-1;
         }
-        return -1;
+        return ans;
     }
 
-    static int count(String[] arr,String key){
-        int c=0;
-        for(String s:arr) if(s.equals(key)) c++;
-        return c;
+    static int ceil(int[] arr,int key){
+        int l=0,r=arr.length-1,ans=-1;
+        while(l<=r){
+            int m=(l+r)/2;
+            if(arr[m]>=key){
+                ans=arr[m];
+                r=m-1;
+            } else l=m+1;
+        }
+        return ans;
     }
 
     public static void main(String[] args){
-        String[] arr={"accA","accB","accB","accC"};
+        int[] arr={10,25,50,100};
 
-        System.out.println(linearFirst(arr,"accB"));
-        System.out.println(binarySearch(arr,"accB"));
-        System.out.println(count(arr,"accB"));
+        System.out.println(linear(arr,30));
+        System.out.println(floor(arr,30));
+        System.out.println(ceil(arr,30));
     }
 }

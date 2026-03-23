@@ -1,59 +1,63 @@
 import java.util.*;
 
-class Client {
-    String name;
-    int risk;
-    int balance;
-    Client(String name,int risk,int balance){
-        this.name=name;
-        this.risk=risk;
-        this.balance=balance;
-    }
-}
-
 public class Week3n4 {
-    static void bubbleSort(Client[] arr){
-        int n=arr.length;
-        for(int i=0;i<n-1;i++){
-            for(int j=0;j<n-i-1;j++){
-                if(arr[j].risk>arr[j+1].risk){
-                    Client t=arr[j];
-                    arr[j]=arr[j+1];
-                    arr[j+1]=t;
-                }
-            }
+    static void merge(int[] arr,int l,int m,int r){
+        int n1=m-l+1,n2=r-m;
+        int[] L=new int[n1],R=new int[n2];
+        for(int i=0;i<n1;i++) L[i]=arr[l+i];
+        for(int j=0;j<n2;j++) R[j]=arr[m+1+j];
+        int i=0,j=0,k=l;
+        while(i<n1 && j<n2){
+            if(L[i]<=R[j]) arr[k++]=L[i++];
+            else arr[k++]=R[j++];
+        }
+        while(i<n1) arr[k++]=L[i++];
+        while(j<n2) arr[k++]=R[j++];
+    }
+
+    static void mergeSort(int[] arr,int l,int r){
+        if(l<r){
+            int m=(l+r)/2;
+            mergeSort(arr,l,m);
+            mergeSort(arr,m+1,r);
+            merge(arr,l,m,r);
         }
     }
 
-    static void insertionSort(Client[] arr){
-        for(int i=1;i<arr.length;i++){
-            Client key=arr[i];
-            int j=i-1;
-            while(j>=0 && (arr[j].risk<key.risk ||
-                    (arr[j].risk==key.risk && arr[j].balance<key.balance))){
-                arr[j+1]=arr[j];
-                j--;
+    static int partition(int[] arr,int low,int high){
+        int pivot=arr[high];
+        int i=low-1;
+        for(int j=low;j<high;j++){
+            if(arr[j]>pivot){
+                i++;
+                int t=arr[i]; arr[i]=arr[j]; arr[j]=t;
             }
-            arr[j+1]=key;
+        }
+        int t=arr[i+1]; arr[i+1]=arr[high]; arr[high]=t;
+        return i+1;
+    }
+
+    static void quickSort(int[] arr,int low,int high){
+        if(low<high){
+            int pi=partition(arr,low,high);
+            quickSort(arr,low,pi-1);
+            quickSort(arr,pi+1,high);
         }
     }
 
     public static void main(String[] args){
-        Client[] arr={
-                new Client("C",80,1000),
-                new Client("A",20,2000),
-                new Client("B",50,1500)
-        };
+        int[] arr={500,100,300};
 
-        bubbleSort(arr);
-        for(Client c:arr) System.out.print(c.name+":"+c.risk+" ");
+        mergeSort(arr,0,arr.length-1);
+        for(int x:arr) System.out.print(x+" ");
         System.out.println();
 
-        insertionSort(arr);
-        for(Client c:arr) System.out.print(c.name+":"+c.risk+" ");
+        quickSort(arr,0,arr.length-1);
+        for(int x:arr) System.out.print(x+" ");
         System.out.println();
 
-        for(int i=0;i<Math.min(10,arr.length);i++)
-            System.out.print(arr[i].name+" ");
+        int sum=0;
+        for(int x:arr) sum+=x;
+        System.out.println(sum);
     }
 }

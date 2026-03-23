@@ -1,60 +1,59 @@
 import java.util.*;
 
-class Transaction {
-    String id;
-    double fee;
-    String ts;
-    Transaction(String id, double fee, String ts) {
-        this.id = id;
-        this.fee = fee;
-        this.ts = ts;
+class Client {
+    String name;
+    int risk;
+    int balance;
+    Client(String name,int risk,int balance){
+        this.name=name;
+        this.risk=risk;
+        this.balance=balance;
     }
 }
 
 public class Week3n4 {
-    static void bubbleSort(ArrayList<Transaction> list) {
-        int n = list.size();
+    static void bubbleSort(Client[] arr){
+        int n=arr.length;
         for(int i=0;i<n-1;i++){
-            boolean swapped=false;
             for(int j=0;j<n-i-1;j++){
-                if(list.get(j).fee > list.get(j+1).fee){
-                    Transaction t=list.get(j);
-                    list.set(j,list.get(j+1));
-                    list.set(j+1,t);
-                    swapped=true;
+                if(arr[j].risk>arr[j+1].risk){
+                    Client t=arr[j];
+                    arr[j]=arr[j+1];
+                    arr[j+1]=t;
                 }
             }
-            if(!swapped) break;
         }
     }
 
-    static void insertionSort(ArrayList<Transaction> list) {
-        for(int i=1;i<list.size();i++){
-            Transaction key=list.get(i);
+    static void insertionSort(Client[] arr){
+        for(int i=1;i<arr.length;i++){
+            Client key=arr[i];
             int j=i-1;
-            while(j>=0 && (list.get(j).fee>key.fee ||
-                    (list.get(j).fee==key.fee && list.get(j).ts.compareTo(key.ts)>0))){
-                list.set(j+1,list.get(j));
+            while(j>=0 && (arr[j].risk<key.risk ||
+                    (arr[j].risk==key.risk && arr[j].balance<key.balance))){
+                arr[j+1]=arr[j];
                 j--;
             }
-            list.set(j+1,key);
+            arr[j+1]=key;
         }
     }
 
-    public static void main(String[] args) {
-        ArrayList<Transaction> list=new ArrayList<>();
-        list.add(new Transaction("id1",10.5,"10:00"));
-        list.add(new Transaction("id2",25.0,"09:30"));
-        list.add(new Transaction("id3",5.0,"10:15"));
+    public static void main(String[] args){
+        Client[] arr={
+                new Client("C",80,1000),
+                new Client("A",20,2000),
+                new Client("B",50,1500)
+        };
 
-        bubbleSort(list);
-        for(Transaction t:list) System.out.print(t.id+":"+t.fee+" ");
+        bubbleSort(arr);
+        for(Client c:arr) System.out.print(c.name+":"+c.risk+" ");
         System.out.println();
 
-        insertionSort(list);
-        for(Transaction t:list) System.out.print(t.id+":"+t.fee+"@"+t.ts+" ");
+        insertionSort(arr);
+        for(Client c:arr) System.out.print(c.name+":"+c.risk+" ");
         System.out.println();
 
-        for(Transaction t:list) if(t.fee>50) System.out.print(t.id+" ");
+        for(int i=0;i<Math.min(10,arr.length);i++)
+            System.out.print(arr[i].name+" ");
     }
 }

@@ -1,21 +1,28 @@
 import java.util.*;
 
+class Asset {
+    String name;
+    double ret;
+    double vol;
+    Asset(String n,double r,double v){
+        name=n; ret=r; vol=v;
+    }
+}
+
 public class Week3n4 {
-    static void merge(int[] arr,int l,int m,int r){
-        int n1=m-l+1,n2=r-m;
-        int[] L=new int[n1],R=new int[n2];
-        for(int i=0;i<n1;i++) L[i]=arr[l+i];
-        for(int j=0;j<n2;j++) R[j]=arr[m+1+j];
-        int i=0,j=0,k=l;
-        while(i<n1 && j<n2){
-            if(L[i]<=R[j]) arr[k++]=L[i++];
-            else arr[k++]=R[j++];
+    static void merge(ArrayList<Asset> arr,int l,int m,int r){
+        ArrayList<Asset> temp=new ArrayList<>();
+        int i=l,j=m+1;
+        while(i<=m && j<=r){
+            if(arr.get(i).ret<=arr.get(j).ret) temp.add(arr.get(i++));
+            else temp.add(arr.get(j++));
         }
-        while(i<n1) arr[k++]=L[i++];
-        while(j<n2) arr[k++]=R[j++];
+        while(i<=m) temp.add(arr.get(i++));
+        while(j<=r) temp.add(arr.get(j++));
+        for(int k=0;k<temp.size();k++) arr.set(l+k,temp.get(k));
     }
 
-    static void mergeSort(int[] arr,int l,int r){
+    static void mergeSort(ArrayList<Asset> arr,int l,int r){
         if(l<r){
             int m=(l+r)/2;
             mergeSort(arr,l,m);
@@ -24,20 +31,25 @@ public class Week3n4 {
         }
     }
 
-    static int partition(int[] arr,int low,int high){
-        int pivot=arr[high];
+    static int partition(ArrayList<Asset> arr,int low,int high){
+        Asset pivot=arr.get(high);
         int i=low-1;
         for(int j=low;j<high;j++){
-            if(arr[j]>pivot){
+            if(arr.get(j).ret>pivot.ret ||
+                    (arr.get(j).ret==pivot.ret && arr.get(j).vol<pivot.vol)){
                 i++;
-                int t=arr[i]; arr[i]=arr[j]; arr[j]=t;
+                Asset t=arr.get(i);
+                arr.set(i,arr.get(j));
+                arr.set(j,t);
             }
         }
-        int t=arr[i+1]; arr[i+1]=arr[high]; arr[high]=t;
+        Asset t=arr.get(i+1);
+        arr.set(i+1,arr.get(high));
+        arr.set(high,t);
         return i+1;
     }
 
-    static void quickSort(int[] arr,int low,int high){
+    static void quickSort(ArrayList<Asset> arr,int low,int high){
         if(low<high){
             int pi=partition(arr,low,high);
             quickSort(arr,low,pi-1);
@@ -46,18 +58,16 @@ public class Week3n4 {
     }
 
     public static void main(String[] args){
-        int[] arr={500,100,300};
+        ArrayList<Asset> arr=new ArrayList<>();
+        arr.add(new Asset("AAPL",12,5));
+        arr.add(new Asset("TSLA",8,7));
+        arr.add(new Asset("GOOG",15,4));
 
-        mergeSort(arr,0,arr.length-1);
-        for(int x:arr) System.out.print(x+" ");
+        mergeSort(arr,0,arr.size()-1);
+        for(Asset a:arr) System.out.print(a.name+":"+a.ret+" ");
         System.out.println();
 
-        quickSort(arr,0,arr.length-1);
-        for(int x:arr) System.out.print(x+" ");
-        System.out.println();
-
-        int sum=0;
-        for(int x:arr) sum+=x;
-        System.out.println(sum);
+        quickSort(arr,0,arr.size()-1);
+        for(Asset a:arr) System.out.print(a.name+":"+a.ret+" ");
     }
 }
